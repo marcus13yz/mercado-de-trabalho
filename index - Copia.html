@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mulheres Brasileiras na História</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --magenta: #c2185b;
+            --rose:    #e91e8c;
+            --violet:  #7b1fa2;
+            --purple:  #9c27b0;
+            --gold:    #f4b400;
+            --amber:   #ff8f00;
+            --cream:   #fff8f5;
+        }
+        * { box-sizing: border-box; }
+        body {
+            background: var(--cream);
+            background-image:
+                radial-gradient(ellipse 70% 50% at 10% 0%,   rgba(194,24,91,0.10) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 45% at 90% 5%,   rgba(123,31,162,0.12) 0%, transparent 55%),
+                radial-gradient(ellipse 50% 40% at 50% 100%, rgba(244,180,0,0.08)  0%, transparent 55%);
+            color: #1a0a2e;
+            overflow-x: hidden;
+            font-family: 'DM Sans', sans-serif;
+        }
+        .font-serif { font-family: 'DM Serif Display', serif; }
+
+        /* ── SCROLL PROGRESS ── */
+        #progress-bar {
+            position:fixed; top:0; left:0;
+            height:4px; width:0%;
+            background: linear-gradient(90deg, var(--magenta), var(--rose), var(--violet), var(--gold), var(--magenta));
+            background-size:300%;
+            z-index:1000; transition:width 0.1s ease;
+            animation: gradShift 4s linear infinite;
+        }
+        @keyframes gradShift { to { background-position:300% } }
+
+        /* ── ORBS ── */
+        @keyframes float1 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(40px,-60px) scale(1.1)} 66%{transform:translate(-25px,25px) scale(0.9)} }
+        @keyframes float2 { 0%,100%{transform:translate(0,0) scale(1)} 33%{transform:translate(-35px,55px) scale(1.15)} 66%{transform:translate(30px,-30px) scale(0.85)} }
+        @keyframes float3 { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(20px,-40px) scale(1.2)} }
+        .orb-1{animation:float1 20s ease-in-out infinite}
+        .orb-2{animation:float2 26s ease-in-out infinite}
+        .orb-3{animation:float3 16s ease-in-out infinite}
+
+        /* ── RIBBON ── */
+        .hero-ribbon {
+            display:inline-flex; align-items:center; gap:0.5rem;
+            background:linear-gradient(90deg,var(--magenta),var(--violet));
+            color:#fff; font-size:0.7rem; font-weight:600;
+            letter-spacing:0.18em; text-transform:uppercase;
+            padding:0.4rem 1.1rem; border-radius:99px; margin-bottom:1.4rem;
+            animation:slideUpFade 0.6s cubic-bezier(0.16,1,0.3,1) both;
+        }
+        .hero-ribbon .dot {
+            width:6px; height:6px; background:var(--gold); border-radius:50%;
+            animation:pulseDot 1.6s ease-in-out infinite;
+        }
+        @keyframes pulseDot { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.8);opacity:0.6} }
+
+        /* ── TEXT SHINE ── */
+        @keyframes shine { to { background-position:200% center } }
+        .text-shine {
+            background:linear-gradient(90deg,var(--magenta) 0%,var(--violet) 35%,var(--gold) 55%,var(--rose) 75%,var(--magenta) 100%);
+            background-size:200% auto;
+            -webkit-background-clip:text; background-clip:text;
+            -webkit-text-fill-color:transparent;
+            animation:shine 6s linear infinite;
+        }
+
+        /* ── REVEAL ── */
+        @keyframes slideUpFade { 0%{opacity:0;transform:translateY(32px)} 100%{opacity:1;transform:translateY(0)} }
+        @keyframes fadeOut     { 0%{opacity:1;transform:translateY(0)} 100%{opacity:0;transform:translateY(-18px)} }
+        .animate-reveal { opacity:0; animation:slideUpFade 0.8s cubic-bezier(0.16,1,0.3,1) forwards }
+        .animate-hide   { animation:fadeOut 0.38s cubic-bezier(0.16,1,0.3,1) forwards }
+
+        /* ── SCROLL REVEAL ── */
+        .scroll-reveal {
+            opacity:0; transform:translateY(36px);
+            transition:opacity 0.7s cubic-bezier(0.16,1,0.3,1),transform 0.7s cubic-bezier(0.16,1,0.3,1);
+        }
+        .scroll-reveal.visible { opacity:1; transform:translateY(0); }
+
+        /* ── CARD ── */
+        .card-container {
+            background:rgba(255,255,255,0.72);
+            backdrop-filter:blur(14px);
+            border:1px solid rgba(255,255,255,0.85);
+            border-radius:1.4rem; 
+            padding: 1.5rem; /* Menor no mobile */
+            transition:transform 0.45s cubic-bezier(0.16,1,0.3,1),box-shadow 0.45s ease,background 0.3s ease;
+            cursor:pointer; position:relative; overflow:hidden;
+        }
+        @media (min-width: 768px) {
+            .card-container { padding: 2rem; }
+        }
+        .card-container::before {
+            content:''; position:absolute; top:0; left:-100%; width:100%; height:3px;
+            background:linear-gradient(90deg,transparent,var(--rose),var(--gold),transparent);
+            transition:left 0.6s ease;
+        }
+        .card-container:hover::before { left:100%; }
+        .card-container:hover { transform:translateY(-9px) scale(1.01); background:#fff; }
+
+        /* ── FILTER & SCROLLBAR (MOBILE IMPROVED) ── */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .filter-btn {
+            position:relative; padding-bottom:0.5rem;
+            color:#6b7280; font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase;
+            transition:color 0.25s ease; font-weight:500; overflow:hidden;
+            white-space: nowrap; /* Não quebra no celular */
+        }
+        .filter-btn:hover  { color:var(--magenta); }
+        .filter-btn:active { transform:scale(0.94); }
+        .filter-btn.active { color:#1a0a2e; font-weight:700; }
+        .filter-btn.active::after {
+            content:''; position:absolute; bottom:0; left:0;
+            width:100%; height:3px; border-radius:3px;
+            background:linear-gradient(90deg,var(--magenta),var(--violet),var(--gold));
+            animation:expandLine 0.4s cubic-bezier(0.16,1,0.3,1) forwards;
+        }
+        @keyframes expandLine { from{width:0;left:50%} to{width:100%;left:0} }
+
+        /* ── RIPPLE ── */
+        .ripple {
+            position:absolute; border-radius:50%;
+            background:rgba(194,24,91,0.18); pointer-events:none;
+            animation:rippleOut 0.5s ease-out forwards;
+        }
+        @keyframes rippleOut { from{width:0;height:0;opacity:1} to{width:120px;height:120px;margin-left:-60px;margin-top:-60px;opacity:0} }
+
+        /* ── SEARCH ── */
+        .search-wrapper { position:relative; width: 100%; }
+        .search-wrapper input {
+            width:100%; padding:0.72rem 1rem 0.72rem 2.9rem;
+            background:rgba(255,255,255,0.75); backdrop-filter:blur(10px);
+            border:1.5px solid rgba(194,24,91,0.15); border-radius:2rem;
+            font-family:'DM Sans',sans-serif; font-size:0.875rem; color:#1a0a2e;
+            outline:none; transition:all 0.3s ease;
+            box-shadow:0 4px 18px rgba(194,24,91,0.06);
+        }
+        .search-wrapper input:focus {
+            background:#fff; border-color:var(--rose);
+            box-shadow:0 0 0 3px rgba(233,30,140,0.15),0 4px 18px rgba(194,24,91,0.08);
+        }
+        .search-wrapper input::placeholder { color:#b0869e; }
+        .search-icon {
+            position:absolute; left:1rem; top:50%; transform:translateY(-50%);
+            color:#c2609e; pointer-events:none;
+        }
+
+        /* ── CANVAS PARTICLES ── */
+        #particles-canvas { position:fixed; inset:0; pointer-events:none; z-index:-5; opacity:0.45; }
+
+        /* ── MODAL (MOBILE IMPROVED) ── */
+        #modal-overlay {
+            position:fixed; inset:0;
+            background:rgba(26,10,46,0.85);
+            backdrop-filter:blur(12px);
+            z-index:500; display:flex; align-items:center; justify-content:center;
+            padding:1rem; opacity:0; pointer-events:none; transition:opacity 0.38s ease;
+        }
+        #modal-overlay.open { opacity:1; pointer-events:all; }
+        #modal-box {
+            background:#fff; border-radius:1.5rem;
+            max-width:720px; width:100%; position:relative; overflow:hidden;
+            transform:scale(0.86) translateY(28px);
+            transition:transform 0.5s cubic-bezier(0.16,1,0.3,1);
+            box-shadow:0 50px 100px -20px rgba(26,10,46,0.5);
+            max-height: calc(100vh - 2rem); overflow-y:auto;
+        }
+        @media(min-width: 640px) {
+            #modal-box { border-radius: 1.75rem; max-height: 90vh; }
+        }
+        #modal-overlay.open #modal-box { transform:scale(1) translateY(0); }
+        
+        .modal-band { height:5px; width:100%; flex-shrink:0; }
+        .modal-body { padding:1.5rem; }
+        @media(min-width: 640px) { .modal-body { padding:2rem 2.5rem 2.5rem; } }
+
+        .modal-close {
+            position:absolute; top:1rem; right:1rem;
+            width:2.2rem; height:2.2rem; background:rgba(0,0,0,0.07); border-radius:50%;
+            display:flex; align-items:center; justify-content:center;
+            color:#6b7280; font-size:1rem; cursor:pointer; z-index:10;
+            transition:background 0.2s,transform 0.2s;
+        }
+        .modal-close:hover { background:rgba(194,24,91,0.12); color:var(--magenta); transform:scale(1.12); }
+
+        /* ── PHOTO ── */
+        .photo-frame {
+            width:100px; height:100px; border-radius:50%;
+            overflow:hidden; flex-shrink:0;
+            border:3px solid #fff;
+            box-shadow:0 8px 32px rgba(194,24,91,0.3);
+            background:#f3e8f5;
+            position:relative;
+        }
+        @media(min-width: 640px) { .photo-frame { width:130px; height:130px; } }
+
+        .photo-frame img {
+            width:100%; height:100%; object-fit:cover; object-position:top center;
+            transition:opacity 0.4s ease;
+        }
+        .photo-frame img.loading { opacity:0; }
+        .photo-frame img.loaded  { opacity:1; }
+
+        .photo-shimmer {
+            position:absolute; inset:0; border-radius:50%;
+            background:linear-gradient(110deg,#f3e8f5 25%,#fce4ec 50%,#f3e8f5 75%);
+            background-size:200%;
+            animation:shimmer 1.4s infinite;
+        }
+        @keyframes shimmer { from{background-position:200%} to{background-position:-200%} }
+        .photo-frame.done .photo-shimmer { display:none; }
+
+        /* ── BW BADGE ── */
+        .bw-badge {
+            display:inline-flex; align-items:center; gap:0.35rem;
+            font-size:0.65rem; font-weight:600; letter-spacing:0.1em; text-transform:uppercase;
+            color:#9ca3af; background:#f3f4f6;
+            padding:0.25rem 0.6rem; border-radius:99px; margin-top:0.5rem;
+        }
+
+        /* ── EMPTY STATE ── */
+        @keyframes emptyBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
+        .empty-icon { animation:emptyBounce 2.2s ease-in-out infinite; display:inline-block; }
+
+        /* ── WEEK BANNER ── */
+        .week-banner {
+            background:linear-gradient(135deg,var(--magenta) 0%,var(--violet) 60%,var(--purple) 100%);
+            color:#fff; text-align:center;
+            padding:0.7rem 1.5rem;
+            font-size:0.75rem; font-weight:500; letter-spacing:0.05em;
+            position:relative; overflow:hidden;
+        }
+        @media(min-width: 640px) { .week-banner { font-size: 0.8rem; } }
+        
+        .week-banner::after {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.12) 50%,transparent 100%);
+            animation:bannerShimmer 3s linear infinite;
+        }
+        @keyframes bannerShimmer { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+        footer { border-top:1px solid rgba(194,24,91,0.15); }
+    </style>
+</head>
+<body class="min-h-screen antialiased pb-20 relative">
+
+    <div id="progress-bar"></div>
+
+    <div class="week-banner">
+        🌸 &nbsp;<strong>8 de Março — Dia da Mulher</strong>&nbsp;·&nbsp;Celebrando as mulheres que transformaram o Brasil&nbsp; 🌸
+    </div>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- Orbs -->
+    <div class="absolute top-0 left-0 w-full h-screen overflow-hidden -z-10 pointer-events-none">
+        <div class="orb-1 absolute top-[-8%] left-[-6%]  w-[36rem] h-[36rem] rounded-full mix-blend-multiply filter blur-3xl opacity-30" style="background:#e91e8c"></div>
+        <div class="orb-2 absolute top-[5%]  right-[-8%] w-[30rem] h-[30rem] rounded-full mix-blend-multiply filter blur-3xl opacity-25" style="background:#7b1fa2"></div>
+        <div class="orb-3 absolute bottom-[10%] left-[30%] w-[22rem] h-[22rem] rounded-full mix-blend-multiply filter blur-3xl opacity-20" style="background:#f4b400"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="pt-12 sm:pt-20 pb-8 sm:pb-10 px-6 max-w-7xl mx-auto">
+        <div id="hero-content">
+            <div class="hero-ribbon">
+                <span class="dot"></span>Semana Internacional da Mulher<span class="dot"></span>
+            </div>
+            <!-- Título ajustado para celular -->
+            <h1 class="animate-reveal font-serif text-shine text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 tracking-tight leading-tight"
+                style="animation-delay:0.12s;padding-bottom:8px;">
+                Mulheres que<br>Fizeram História
+            </h1>
+            <p class="animate-reveal text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl font-light leading-relaxed"
+               style="animation-delay:0.28s;">
+                Conheça as pioneiras brasileiras que abriram caminhos e moldaram a nossa sociedade.
+                Valorizar a presença feminina nos espaços de poder, ciência e cultura é o primeiro passo para a equidade.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 mt-2">
+        <!-- Search -->
+        <div class="mb-8 md:mb-10 flex">
+            <div class="search-wrapper animate-reveal w-full sm:max-w-md" style="animation-delay:0.38s">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" id="search-input" placeholder="Pesquisar mulher ou descrição…">
+            </div>
+        </div>
+
+        <!-- Filters (Rolagem horizontal no mobile) -->
+        <nav class="flex flex-nowrap overflow-x-auto no-scrollbar gap-3 md:gap-6 mb-10 md:mb-14 pb-3 border-b" style="border-color:rgba(194,24,91,0.12)">
+            <button onclick="handleFilterClick('Todas',event)"                             class="animate-reveal filter-btn active" style="animation-delay:0.42s">Todas</button>
+            <button onclick="handleFilterClick('Luta, Resistência e Independência',event)" class="animate-reveal filter-btn" style="animation-delay:0.47s">Luta &amp; Resistência</button>
+            <button onclick="handleFilterClick('Ciência, Meio Ambiente e Saúde',event)"    class="animate-reveal filter-btn" style="animation-delay:0.52s">Ciência &amp; Saúde</button>
+            <button onclick="handleFilterClick('Sociedade, Ativismo e Política',event)"    class="animate-reveal filter-btn" style="animation-delay:0.57s">Sociedade &amp; Política</button>
+            <button onclick="handleFilterClick('Educação, Filosofia e Literatura',event)"  class="animate-reveal filter-btn" style="animation-delay:0.62s">Educação &amp; Literatura</button>
+            <button onclick="handleFilterClick('Música, Artes e Cultura',event)"           class="animate-reveal filter-btn" style="animation-delay:0.67s">Música &amp; Artes</button>
+            <button onclick="handleFilterClick('Desporto',event)"                          class="animate-reveal filter-btn" style="animation-delay:0.72s">Desporto</button>
+        </nav>
+
+        <!-- Grid -->
+        <div id="cards-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-7"></div>
+
+        <!-- Empty -->
+        <div id="empty-state" class="hidden flex-col items-center justify-center py-20 md:py-28 text-center">
+            <span class="empty-icon text-5xl mb-5">🌸</span>
+            <h3 class="font-serif text-2xl mb-2" style="color:var(--magenta)">Nenhum resultado encontrado</h3>
+            <p class="text-gray-500 text-sm">Tente outra palavra ou limpe a pesquisa.</p>
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal-overlay" onclick="closeModal(event)">
+        <div id="modal-box">
+            <div class="modal-band" id="modal-band"></div>
+            <div class="modal-body">
+                <button class="modal-close" onclick="closeModalBtn()">✕</button>
+
+                <!-- Flex layout ajustado para mobile: foto em cima/centro no mobile, lado a lado no desktop -->
+                <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 mb-6">
+                    <!-- Photo -->
+                    <div class="photo-frame" id="modal-photo-frame" style="display: none;">
+                        <div class="photo-shimmer"></div>
+                        <img id="modal-photo" src="" alt="" class="loading">
+                    </div>
+                    <!-- Info -->
+                    <div class="flex-1 w-full text-center sm:text-left flex flex-col items-center sm:items-start pt-1">
+                        <span id="modal-badge" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-2"></span>
+                        <h2 id="modal-name"  class="font-serif text-2xl sm:text-3xl font-bold text-gray-900 leading-tight"></h2>
+                        <span id="modal-years" class="font-serif italic text-gray-400 text-sm sm:text-base mt-0.5 block"></span>
+                        <span id="modal-bw-badge" class="bw-badge hidden">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                            Foto histórica
+                        </span>
+                    </div>
+                </div>
+
+                <p id="modal-desc" class="text-gray-600 leading-relaxed text-sm sm:text-base font-light"></p>
+                <div id="modal-line" class="mt-6 sm:mt-8 h-0.5 w-full rounded"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="animate-reveal max-w-7xl mx-auto px-6 mt-16 md:mt-24 pt-8 text-gray-500 text-xs sm:text-sm font-light flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left" style="animation-delay:1s">
+        <p>Projeto: Violência contra a mulher e valorização da mulher na ciência.</p>
+        <p class="font-serif italic" style="color:var(--magenta)">Inspirar para transformar. 🌸</p>
+    </footer>
+
+<script>
+// ─── CATEGORY COLORS ──────────────────────────────────────────────────────
+const categoryColors = {
+    "Luta, Resistência e Independência":  { bg:"bg-red-100",     text:"text-red-700",     dot:"bg-red-500",     border:"border-red-500",     glow:"rgba(220,38,38,0.20)",    band:"linear-gradient(90deg,#c2185b,#e53935)" },
+    "Ciência, Meio Ambiente e Saúde":     { bg:"bg-emerald-100", text:"text-emerald-700", dot:"bg-emerald-500", border:"border-emerald-500", glow:"rgba(16,185,129,0.20)",   band:"linear-gradient(90deg,#00897b,#43a047)" },
+    "Sociedade, Ativismo e Política":     { bg:"bg-violet-100",  text:"text-violet-700",  dot:"bg-violet-500",  border:"border-violet-500",  glow:"rgba(124,58,237,0.22)",   band:"linear-gradient(90deg,#7b1fa2,#512da8)" },
+    "Educação, Filosofia e Literatura":   { bg:"bg-amber-100",   text:"text-amber-700",   dot:"bg-amber-500",   border:"border-amber-500",   glow:"rgba(245,158,11,0.22)",   band:"linear-gradient(90deg,#f57f17,#f9a825)" },
+    "Música, Artes e Cultura":            { bg:"bg-pink-100",    text:"text-pink-700",    dot:"bg-pink-500",    border:"border-pink-500",    glow:"rgba(236,72,153,0.22)",   band:"linear-gradient(90deg,#c2185b,#e91e8c)" },
+    "Desporto":                           { bg:"bg-sky-100",     text:"text-sky-700",     dot:"bg-sky-500",     border:"border-sky-500",     glow:"rgba(14,165,233,0.20)",   band:"linear-gradient(90deg,#0277bd,#0288d1)" }
+};
+
+// ─── DATABASE  ────────────────────────────────────────────────────────────
+const database = [
+    {
+        nome:"Dandara dos Palmares", anos:"? – 1694",
+        categoria:"Luta, Resistência e Independência",
+        wiki:{ pt:"Dandara dos Palmares" },
+        descricao:"Guerreira negra e figura central na resistência contra a escravidão no Brasil colonial. Liderança do Quilombo dos Palmares, dominava técnicas da capoeira e elaborava estratégias de defesa contra ataques portugueses e holandeses."
+    },
+    {
+        nome:"Maria Quitéria de Jesus", anos:"1792 – 1853",
+        categoria:"Luta, Resistência e Independência",
+        wiki:{ pt:"Maria Quitéria de Jesus", en:"Maria Quitéria" },
+        descricao:"Considerada a heroína da Independência do Brasil, disfarçou-se de homem para poder alistar-se e lutar nas batalhas da independência na Bahia. Foi a primeira mulher a assentar praça numa unidade militar no Brasil."
+    },
+    {
+        nome:"Tatiana Coelho de Sampaio", anos:"1966 – presente",
+        categoria:"Ciência, Meio Ambiente e Saúde",
+        wiki:{ pt:"Tatiana Coelho de Sampaio", en:"Tatiana Coelho de Sampaio" },
+        descricao:"Cientista, professora e pesquisadora da UFRJ que desenvolveu a polilaminina, molécula experimental capaz de regenerar tecidos nervosos da medula espinhal. Em testes clínicos iniciais, a substância conseguiu devolver movimentos e independência a pacientes paraplégicos e tetraplégicos, colocando o Brasil na vanguarda mundial da regeneração neural."
+    },
+    {
+        nome:"Bertha Lutz", anos:"1894 – 1976",
+        categoria:"Ciência, Meio Ambiente e Saúde",
+        wiki:{ pt:"Bertha Lutz", en:"Bertha Lutz" },
+        descricao:"Pioneira na zoologia, investigadora do Museu Nacional e a principal líder do movimento sufragista no Brasil. Foi fundamental para a conquista do voto feminino no país, garantido em 1932."
+    },
+    {
+        nome:"Nise da Silveira", anos:"1905 – 1999",
+        categoria:"Ciência, Meio Ambiente e Saúde",
+        wiki:{ pt:"Nise da Silveira", en:"Nise da Silveira" },
+        descricao:"Médica psiquiatra que revolucionou o tratamento de saúde mental no Brasil ao rejeitar métodos agressivos como eletrochoques. Introduziu o tratamento através da arte, da terapia ocupacional e do convívio com animais."
+    },
+    {
+        nome:"Zilda Arns", anos:"1934 – 2010",
+        categoria:"Ciência, Meio Ambiente e Saúde",
+        wiki:{ pt:"Zilda Arns", en:"Zilda Arns" },
+        descricao:"Médica pediatra e sanitarista, fundou a Pastoral da Criança. Através de ações simples, como a difusão do soro caseiro, o seu trabalho salvou a vida de milhares de crianças da desnutrição no Brasil e no mundo."
+    },
+    {
+        nome:"Celina Turchi", anos:"1952 – presente",
+        categoria:"Ciência, Meio Ambiente e Saúde",
+        wiki:{ pt:"Celina Turchi", en:"Celina Turchi" },
+        descricao:"Médica epidemiologista que liderou a equipa responsável por descobrir a ligação entre o vírus da Zika e os casos de microcefalia no Nordeste brasileiro (2015-2016). Foi eleita uma das 100 pessoas mais influentes do mundo pela Time."
+    },
+    {
+        nome:"Neiva Guedes", anos:"1962 – presente",
+        categoria:"Ciência, Meio Ambiente e Saúde",
+        wiki:{ pt:"Neiva Guedes", en:"Neiva Guedes" },
+        descricao:"Bióloga que dedicou a sua vida a salvar a Arara-Azul da extinção no Pantanal. O seu trabalho com o Instituto Arara Azul é reconhecido mundialmente como um dos projetos de conservação mais bem-sucedidos do planeta."
+    },
+    {
+        nome:"Jaqueline Goes de Jesus", anos:"1989 – presente",
+        categoria:"Ciência, Meio Ambiente e Saúde",
+        wiki:{ pt:"Jaqueline Goes de Jesus", en:"Jaqueline Goes de Jesus" },
+        descricao:"Biomédica que liderou a equipa responsável pelo sequenciamento do genoma do SARS-CoV-2 em apenas 48 horas no Brasil, tornando-se um dos grandes rostos da ciência brasileira contemporânea."
+    },
+    {
+        nome:"Pesquisadoras da USP", anos:"Atualidade",
+        categoria:"Ciência, Meio Ambiente e Saúde",
+        wiki:null,
+        descricao:"Cientistas que utilizam a pesquisa rigorosa para combater violências estruturais. Através do levantamento de dados, auxiliam na avaliação de políticas públicas e na proteção de mulheres em situação de vulnerabilidade."
+    },
+    {
+        nome:"Antonieta de Barros", anos:"1901 – 1952",
+        categoria:"Sociedade, Ativismo e Política",
+        wiki:{ pt:"Antonieta de Barros", en:"Antonieta de Barros" },
+        descricao:"Primeira mulher negra a ser eleita deputada no Brasil (1934). Lutou incansavelmente pela valorização dos professores e foi a autora do projeto de lei que criou o Dia do Professor no Brasil."
+    },
+    {
+        nome:"Maria da Penha", anos:"1945 – presente",
+        categoria:"Sociedade, Ativismo e Política",
+        wiki:{ pt:"Maria da Penha Maia Fernandes", en:"Maria da Penha" },
+        descricao:"Farmacêutica que sobreviveu a duas tentativas de homicídio por parte do ex-marido. A sua luta por justiça resultou na criação da Lei Maria da Penha (2006), uma das melhores legislações do mundo contra a violência doméstica."
+    },
+    {
+        nome:"Sueli Carneiro", anos:"1950 – presente",
+        categoria:"Sociedade, Ativismo e Política",
+        wiki:{ pt:"Sueli Carneiro", en:"Sueli Carneiro" },
+        descricao:"Fundadora do Geledés, Sueli é uma das pioneiras na articulação teórica e prática do feminismo negro e na luta por políticas de ações afirmativas no Brasil."
+    },
+    {
+        nome:"Sônia Guajajara", anos:"1974 – presente",
+        categoria:"Sociedade, Ativismo e Política",
+        wiki:{ pt:"Sônia Guajajara", en:"Sônia Guajajara" },
+        descricao:"Líder indígena e ativista ambiental, uma das vozes mais potentes na defesa da Amazônia globalmente. Em 2023, tornou-se a primeira Ministra dos Povos Indígenas do Brasil."
+    },
+    {
+        nome:"Marielle Franco", anos:"1979 – 2018",
+        categoria:"Sociedade, Ativismo e Política",
+        wiki:{ pt:"Marielle Franco", en:"Marielle Franco" },
+        descricao:"Socióloga e vereadora do Rio de Janeiro. Mulher negra e favelada, tornou-se um símbolo global da luta contra a violência e na defesa das minorias. O seu legado continua a inspirar."
+    },
+    {
+        nome:"Djamila Ribeiro", anos:"1980 – presente",
+        categoria:"Sociedade, Ativismo e Política",
+        wiki:{ pt:"Djamila Ribeiro", en:"Djamila Ribeiro" },
+        descricao:"Filósofa e autora de best-sellers como o 'Pequeno Manual Antirracista'. Djamila popularizou o debate sobre racismo estrutural e feminismo negro no Brasil."
+    },
+    {
+        nome:"Erika Hilton", anos:"1992 – presente",
+        categoria:"Sociedade, Ativismo e Política",
+        wiki:{ pt:"Erika Hilton", en:"Erika Hilton" },
+        descricao:"Ativista dos direitos LGBTQIA+. Fez história ao ser uma das primeiras mulheres trans eleitas para a Câmara dos Deputados em 2022, marcando uma mudança profunda na política brasileira."
+    },
+    {
+        nome:"Nísia Floresta", anos:"1810 – 1885",
+        categoria:"Educação, Filosofia e Literatura",
+        wiki:{ pt:"Nísia Floresta", en:"Nísia Floresta" },
+        descricao:"Considerada a primeira feminista do Brasil. No século XIX, fundou um colégio para meninas fugindo aos padrões da época. O seu livro 'Direitos das Mulheres e Injustiça dos Homens' (1832) foi um marco histórico."
+    },
+    {
+        nome:"Carolina Maria de Jesus", anos:"1914 – 1977",
+        categoria:"Educação, Filosofia e Literatura",
+        wiki:{ pt:"Carolina Maria de Jesus", en:"Carolina Maria de Jesus" },
+        descricao:"Catadora de papel e moradora de favela que registou as mazelas da pobreza. O seu livro Quarto de Despejo (1960) é uma obra-prima traduzida para dezenas de idiomas."
+    },
+    {
+        nome:"Conceição Evaristo", anos:"1946 – presente",
+        categoria:"Educação, Filosofia e Literatura",
+        wiki:{ pt:"Conceição Evaristo", en:"Conceição Evaristo" },
+        descricao:"Uma das mais aclamadas escritoras brasileiras vivas. Cunhou o termo 'Escrevivência' para descrever a sua literatura, que retrata a memória e a vivência das mulheres negras."
+    },
+    {
+        nome:"Chiquinha Gonzaga", anos:"1847 – 1935",
+        categoria:"Música, Artes e Cultura",
+        wiki:{ pt:"Chiquinha Gonzaga", en:"Chiquinha Gonzaga" },
+        descricao:"Compositora e primeira mulher a reger uma orquestra no Brasil. Abolicionista ferrenha e autora da primeira marcha carnavalesca com letra da história ('Ó Abre Alas')."
+    },
+    {
+        nome:"Tarsila do Amaral", anos:"1886 – 1973",
+        categoria:"Música, Artes e Cultura",
+        wiki:{ pt:"Tarsila do Amaral", en:"Tarsila do Amaral" },
+        descricao:"Ícone do Modernismo brasileiro. A sua obra Abaporu (1928) inspirou o Movimento Antropofágico e revolucionou a arte nacional ao trazer cores vivas e temas brasileiros para as telas."
+    },
+    {
+        nome:"Fernanda Montenegro", anos:"1929 – presente",
+        categoria:"Música, Artes e Cultura",
+        wiki:{ pt:"Fernanda Montenegro", en:"Fernanda Montenegro" },
+        descricao:"A grande dama da representação no Brasil. Única brasileira indicada ao Óscar de Melhor Atriz e primeira mulher a vencer o Emmy Internacional. É imortal da Academia Brasileira de Letras."
+    },
+    {
+        nome:"Anitta", anos:"1993 – presente",
+        categoria:"Música, Artes e Cultura",
+        wiki:{ pt:"Anitta (cantora)", en:"Anitta (singer)" },
+        descricao:"Primeira artista latina a alcançar o número 1 global do Spotify. Levou o funk brasileiro a palcos internacionais, destacando-se pela sua enorme visão estratégica e de negócios."
+    },
+    {
+        nome:"Marta Vieira da Silva", anos:"1986 – presente",
+        categoria:"Desporto",
+        wiki:{ pt:"Marta Vieira da Silva", en:"Marta (footballer)" },
+        descricao:"A 'Rainha do Futebol'. Eleita seis vezes a melhor do mundo pela FIFA, é a maior artilheira da história das Copas. É a maior voz na luta pela valorização do futebol feminino."
+    },
+    {
+        nome:"Rebeca Andrade", anos:"1999 – presente",
+        categoria:"Desporto",
+        wiki:{ pt:"Rebeca Andrade", en:"Rebeca Andrade" },
+        descricao:"A maior medalhista olímpica da história do Brasil. Superou graves lesões para se tornar campeã olímpica e mundial. Nas Olimpíadas de Paris (2024), consolidou-se como uma lenda global."
+    },
+    {
+        nome:"Rayssa Leal", anos:"2008 – presente",
+        categoria:"Desporto",
+        wiki:{ pt:"Rayssa Leal", en:"Rayssa Leal" },
+        descricao:"A 'Fadinha', quebrou recordes ao tornar-se a mais jovem medalhista olímpica do Brasil nos Jogos de Tóquio. Tornou-se o grande rosto de uma nova geração de meninas no desporto radical."
+    }
+];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let isAnimating  = false;
+let activeFilter = 'Todas';
+let searchQuery  = '';
+const photoCache = {};
+
+// ─── FETCH PHOTO ─────────────────────────────────────────────────────────────
+async function fetchWikiPhoto(wikiObj, nome) {
+    if (!wikiObj) return null;
+
+    // 1) Wikidata P18 (mais confiável — imagem oficial da pessoa)
+    for (const lang of ['pt','en']) {
+        const title = wikiObj[lang];
+        if (!title) continue;
+        const cacheKey = `wd:${lang}:${title}`;
+        if (cacheKey in photoCache) {
+            if (photoCache[cacheKey]) return photoCache[cacheKey];
+            continue;
+        }
+        try {
+            const ppUrl = `https://${lang}.wikipedia.org/w/api.php?action=query&prop=pageprops&ppprop=wikibase_item&titles=${encodeURIComponent(title)}&format=json&origin=*`;
+            const ppRes = await fetch(ppUrl, { signal: AbortSignal.timeout(7000) });
+            const ppData = await ppRes.json();
+            const page = Object.values(ppData.query.pages)[0];
+            const entityId = page?.pageprops?.wikibase_item;
+
+            if (entityId) {
+                const wdUrl = `https://www.wikidata.org/w/api.php?action=wbgetclaims&entity=${entityId}&property=P18&format=json&origin=*`;
+                const wdRes = await fetch(wdUrl, { signal: AbortSignal.timeout(7000) });
+                const wdData = await wdRes.json();
+                const claims = wdData.claims?.P18;
+                if (claims?.length) {
+                    const filename = claims[0].mainsnak.datavalue.value.replace(/ /g, '_');
+                    const encoded = encodeURIComponent(filename);
+                    const imgUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/${encoded}?width=500`;
+                    photoCache[cacheKey] = imgUrl;
+                    return imgUrl;
+                }
+            }
+        } catch(e) { /* timeout */ }
+        photoCache[cacheKey] = null;
+    }
+
+    // 2) REST API fallback
+    for (const lang of ['pt','en']) {
+        const title = wikiObj[lang];
+        if (!title) continue;
+        const cacheKey = `rest:${lang}:${title}`;
+        if (cacheKey in photoCache) {
+            if (photoCache[cacheKey]) return photoCache[cacheKey];
+            continue;
+        }
+        try {
+            const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+            const res  = await fetch(url, { signal: AbortSignal.timeout(7000) });
+            const data = await res.json();
+            if (data.thumbnail?.source) {
+                const src = data.thumbnail.source.replace(/\/\d+px-/, '/440px-');
+                photoCache[cacheKey] = src;
+                return src;
+            }
+        } catch(e) { /* timeout */ }
+        photoCache[cacheKey] = null;
+    }
+
+    // 3) Action API fallback
+    for (const lang of ['pt','en']) {
+        const title = wikiObj[lang];
+        if (!title) continue;
+        const cacheKey = `action:${lang}:${title}`;
+        if (cacheKey in photoCache) {
+            if (photoCache[cacheKey]) return photoCache[cacheKey];
+            continue;
+        }
+        try {
+            const url = `https://${lang}.wikipedia.org/w/api.php?action=query&titles=${encodeURIComponent(title)}&prop=pageimages&format=json&pithumbsize=500&origin=*`;
+            const res  = await fetch(url, { signal: AbortSignal.timeout(6000) });
+            const data = await res.json();
+            const page = Object.values(data.query.pages)[0];
+            if (page.thumbnail?.source) {
+                photoCache[cacheKey] = page.thumbnail.source;
+                return page.thumbnail.source;
+            }
+        } catch(e) { /* network error */ }
+        photoCache[cacheKey] = null;
+    }
+    return null;
+}
+
+async function prefetchAll() {
+    for (const item of database) {
+        fetchWikiPhoto(item.wiki, item.nome);
+    }
+}
+
+// ─── SCROLL PROGRESS + PARALLAX ────────────────────────────────────────────
+window.addEventListener('scroll', () => {
+    const max = document.body.scrollHeight - innerHeight;
+    document.getElementById('progress-bar').style.width = (scrollY/max*100)+'%';
+    document.getElementById('hero-content').style.transform = `translateY(${scrollY*0.16}px)`;
+});
+
+// ─── INTERSECTION OBSERVER ─────────────────────────────────────────────────
+const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
+}, { threshold:0.1 });
+
+// ─── PARTICLES ─────────────────────────────────────────────────────────────
+const canvas = document.getElementById('particles-canvas');
+const ctx    = canvas.getContext('2d');
+const pCol   = ['#e91e8c','#c2185b','#7b1fa2','#f4b400','#ff8f00','#9c27b0','#ec407a'];
+let particles = [];
+function resizeCanvas(){ canvas.width=innerWidth; canvas.height=innerHeight; }
+resizeCanvas(); window.addEventListener('resize', resizeCanvas);
+for(let i=0;i<65;i++) particles.push({
+    x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+    r:0.7+Math.random()*1.8, dx:(Math.random()-.5)*.28, dy:(Math.random()-.5)*.28,
+    alpha:0.1+Math.random()*.28, color:pCol[Math.floor(Math.random()*pCol.length)]
+});
+(function loop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=p.color; ctx.globalAlpha=p.alpha; ctx.fill();
+        p.x+=p.dx; p.y+=p.dy;
+        if(p.x<0||p.x>canvas.width) p.dx*=-1;
+        if(p.y<0||p.y>canvas.height) p.dy*=-1;
+    });
+    ctx.globalAlpha=1; requestAnimationFrame(loop);
+})();
+
+// ─── RIPPLE ────────────────────────────────────────────────────────────────
+function addRipple(btn,e){
+    const r=document.createElement('span'); r.className='ripple';
+    r.style.left=e.offsetX+'px'; r.style.top=e.offsetY+'px';
+    btn.appendChild(r); setTimeout(()=>r.remove(),500);
+}
+
+// ─── FILTER ────────────────────────────────────────────────────────────────
+function handleFilterClick(cat,ev){
+    if(isAnimating) return;
+    const btns=document.querySelectorAll('.filter-btn');
+    const clicked=ev.currentTarget;
+    if(clicked.classList.contains('active')) return;
+    addRipple(clicked,ev); isAnimating=true; activeFilter=cat;
+    btns.forEach(b=>b.classList.remove('active')); clicked.classList.add('active');
+    const cards=Array.from(document.getElementById('cards-grid').children);
+    if(!cards.length){ renderCards(); return; }
+    cards.forEach(c=>{ c.style.animationDelay='0s'; c.classList.remove('animate-reveal'); c.classList.add('animate-hide'); });
+    setTimeout(renderCards,400);
+}
+
+// ─── SEARCH ────────────────────────────────────────────────────────────────
+document.getElementById('search-input').addEventListener('input',e=>{
+    searchQuery=e.target.value.toLowerCase().trim(); renderCards();
+});
+
+// ─── RENDER CARDS ──────────────────────────────────────────────────────────
+function renderCards(){
+    const grid=document.getElementById('cards-grid');
+    const empty=document.getElementById('empty-state');
+    grid.innerHTML='';
+    let filtered=activeFilter==='Todas' ? database : database.filter(i=>i.categoria===activeFilter);
+    if(searchQuery) filtered=filtered.filter(i=>
+        i.nome.toLowerCase().includes(searchQuery)||i.descricao.toLowerCase().includes(searchQuery));
+    if(!filtered.length){
+        empty.classList.remove('hidden'); empty.classList.add('flex'); isAnimating=false; return;
+    }
+    empty.classList.add('hidden'); empty.classList.remove('flex');
+    filtered.forEach((item,idx)=>{
+        const c=categoryColors[item.categoria];
+        const card=document.createElement('div');
+        card.className='card-container group flex flex-col h-full animate-reveal scroll-reveal';
+        card.style.animationDelay=`${idx*0.072}s`;
+        card.style.transitionDelay=`${idx*0.04}s`;
+        let catLabel=catShort(item.categoria);
+        const shortDesc=item.descricao.length>165?item.descricao.slice(0,165)+'…':item.descricao;
+        card.innerHTML=`
+            <div class="mb-4">
+                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest ${c.bg} ${c.text}">
+                    <span class="w-1.5 h-1.5 rounded-full ${c.dot} mr-2 transition-transform duration-300 group-hover:scale-[2]"></span>
+                    ${catLabel}
+                </span>
+            </div>
+            <div class="mb-3">
+                <h3 class="font-serif text-2xl font-bold text-gray-900 transition-all duration-300 group-hover:translate-x-1">${item.nome}</h3>
+                <span class="font-serif italic text-sm text-gray-400 block mt-0.5 transition-all duration-300 group-hover:translate-x-1">${item.anos}</span>
+            </div>
+            <p class="text-sm text-gray-600 leading-relaxed font-light flex-grow opacity-90 group-hover:opacity-100 transition-opacity duration-300">${shortDesc}</p>
+            <div class="mt-5 pt-4 border-t w-10 group-hover:w-full transition-all duration-700 ease-in-out border-gray-200 group-hover:${c.border}"></div>
+            <button class="mt-3 inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300" style="color:var(--magenta)">
+                Ver mais
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-300 group-hover:translate-x-1"><path d="M9 5l7 7-7 7"/></svg>
+            </button>`;
+        card.addEventListener('click',()=>openModal(item));
+        card.addEventListener('mouseenter',()=>{ card.style.boxShadow=`0 20px 45px -15px ${c.glow},0 0 0 1px rgba(255,255,255,0.7)`; });
+        card.addEventListener('mouseleave',()=>{ card.style.boxShadow=''; });
+        grid.appendChild(card);
+        revealObs.observe(card);
+    });
+    setTimeout(()=>{ isAnimating=false; }, filtered.length*72+800);
+}
+
+function catShort(cat){
+    return cat.replace(', Meio Ambiente','').replace(', Ativismo','')
+              .replace(', Filosofia','').replace(', Artes e Cultura',' & Cultura')
+              .replace(' e ',' & ');
+}
+
+// ─── MODAL ─────────────────────────────────────────────────────────────────
+async function openModal(item){
+    const c=categoryColors[item.categoria];
+
+    // Popula o texto
+    document.getElementById('modal-name').textContent=item.nome;
+    document.getElementById('modal-years').textContent=item.anos;
+    document.getElementById('modal-desc').textContent=item.descricao;
+    document.getElementById('modal-band').style.background=c.band;
+    document.getElementById('modal-line').style.background=c.band;
+
+    const badge=document.getElementById('modal-badge');
+    badge.className=`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest ${c.bg} ${c.text}`;
+    badge.textContent=catShort(item.categoria);
+
+    const frame=document.getElementById('modal-photo-frame');
+    const photo=document.getElementById('modal-photo');
+    const bwBadge=document.getElementById('modal-bw-badge');
+
+    // Reset UI
+    bwBadge.classList.add('hidden');
+    photo.style.filter='';
+
+    document.getElementById('modal-overlay').classList.add('open');
+    document.body.style.overflow='hidden';
+
+    // Lista de pessoas que não queremos exibir imagens geradas/desenhos. 
+    // Se não for possível achar foto real para ninguém, ele simplesmente omitirá o círculo de foto.
+    const hidePhotoFor = [
+        "Dandara dos Palmares",
+        "Tatiana Coelho de Sampaio",
+        "Celina Turchi",
+        "Neiva Guedes",
+        "Pesquisadoras da USP"
+    ];
+
+    if (hidePhotoFor.includes(item.nome)) {
+        frame.style.display = 'none'; // Esconde a foto completamente para um visual mais limpo e sem cartoons
+    } else {
+        frame.style.display = 'block';
+        frame.classList.remove('done');
+        photo.classList.remove('loaded'); 
+        photo.classList.add('loading');
+
+        const photoUrl = await fetchWikiPhoto(item.wiki, item.nome);
+        
+        if (!photoUrl) {
+            frame.style.display = 'none'; // Esconde também se não houver foto real na Wiki
+        } else {
+            const rawYear = (item.anos||'').split('–')[0].replace(/[^0-9]/g,''); 
+            const birthYear = rawYear ? parseInt(rawYear) : 9999;
+            const isHistorical = birthYear < 1910;
+
+            const img = new Image();
+            img.onload = () => {
+                photo.src = photoUrl;
+                if(isHistorical) {
+                    photo.style.filter='grayscale(85%) contrast(1.1) brightness(1.05)';
+                    bwBadge.classList.remove('hidden');
+                }
+                photo.classList.remove('loading'); 
+                photo.classList.add('loaded');
+                frame.classList.add('done');
+            };
+            img.onerror = () => {
+                frame.style.display = 'none';
+            };
+            img.src = photoUrl;
+        }
+    }
+}
+
+function closeModalBtn(){
+    document.getElementById('modal-overlay').classList.remove('open');
+    document.body.style.overflow='';
+}
+function closeModal(e){ if(e.target===document.getElementById('modal-overlay')) closeModalBtn(); }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModalBtn(); });
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+window.onload=()=>{
+    renderCards();
+    document.querySelectorAll('.scroll-reveal').forEach(el=>revealObs.observe(el));
+    setTimeout(prefetchAll, 1200);
+};
+</script>
+</body>
+</html>
